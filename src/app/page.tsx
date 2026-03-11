@@ -39,9 +39,21 @@ export default function Home() {
   const [cost, setCost] = useState("");
   const [shippingCost, setShippingCost] = useState("");
   const [adSpend, setAdSpend] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
-  const totalRevenue = orders.reduce((sum, o) => sum + o.sellingPrice, 0);
-  const totalCosts = orders.reduce(
+  const filteredOrders = useMemo(() => {
+    if (!startDate && !endDate) return orders;
+    return orders.filter((o) => {
+      const t = new Date(o.date).getTime();
+      if (startDate && t < new Date(startDate).getTime()) return false;
+      if (endDate && t > new Date(endDate).getTime() + 86399999) return false;
+      return true;
+    });
+  }, [orders, startDate, endDate]);
+
+  const totalRevenue = filteredOrders.reduce((sum, o) => sum + o.sellingPrice, 0);
+  const totalCosts = filteredOrders.reduce(
     (sum, o) => sum + o.cost + o.shippingCost + o.adSpend,
     0
   );
@@ -49,14 +61,28 @@ export default function Home() {
 
   const dailyProfitData = useMemo(() => {
     const grouped: Record<string, number> = {};
-    for (const o of orders) {
+    for (const o of filteredOrders) {
       const profit = o.sellingPrice - o.cost - o.shippingCost - o.adSpend;
       grouped[o.date] = (grouped[o.date] || 0) + profit;
     }
     return Object.entries(grouped)
       .map(([date, profit]) => ({ date, profit: parseFloat(profit.toFixed(2)) }))
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  }, [orders]);
+  }, [filteredOrders]);
+
+  const productAnalytics = useMemo(() => {
+    const map: Record<string, { revenue: number; profit: number; count: number }> = {};
+    for (const o of filteredOrders) {
+      const costs = o.cost + o.shippingCost + o.adSpend;
+      if (!map[o.productName]) map[o.productName] = { revenue: 0, profit: 0, count: 0 };
+      map[o.productName].revenue += o.sellingPrice;
+      map[o.productName].profit += o.sellingPrice - costs;
+      map[o.productName].count += 1;
+    }
+    return Object.entries(map)
+      .map(([name, data]) => ({ name, ...data }))
+      .sort((a, b) => b.profit - a.profit);
+  }, [filteredOrders]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -89,6 +115,40 @@ export default function Home() {
       <h1 className="text-3xl font-bold text-center mb-8">
         Dropshipping Profit Tracker
       </h1>
+
+      {/* Date Range Filter */}
+      <div className="bg-white rounded-lg shadow p-4 mb-8 flex flex-wrap items-end gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            From
+          </label>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            To
+          </label>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        {(startDate || endDate) && (
+          <button
+            onClick={() => { setStartDate(""); setEndDate(""); }}
+            className="text-sm text-blue-600 hover:text-blue-800 cursor-pointer"
+          >
+            Clear filter
+          </button>
+        )}
+      </div>
 
       {/* Dashboard Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
@@ -235,11 +295,11 @@ export default function Home() {
       </div>
 
       {/* Orders Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white rounded-lg shadow overflow-hidden mb-8">
         <h2 className="text-xl font-semibold p-6 pb-4">
-          Orders ({orders.length})
+          Orders ({filteredOrders.length})
         </h2>
-        {orders.length === 0 ? (
+        {filteredOrders.length === 0 ? (
           <p className="px-6 pb-6 text-gray-500">
             No orders yet. Add your first order above!
           </p>
@@ -267,7 +327,7 @@ export default function Home() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {orders.map((order) => {
+                {filteredOrders.map((order) => {
                   const orderCosts =
                     order.cost + order.shippingCost + order.adSpend;
                   const orderProfit = order.sellingPrice - orderCosts;
@@ -308,6 +368,67 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      {/* Product Analytics */}
+      {productAnalytics.length > 0 && (
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <h2 className="text-xl font-semibold p-6 pb-4">
+            Product Analytics
+          </h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead className="bg-gray-50 border-y border-gray-200">
+                <tr>
+                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
+                    Product
+                  </th>
+                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
+                    Orders
+                  </th>
+                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
+                    Revenue
+                  </th>
+                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
+                    Profit
+                  </th>
+                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
+                    Avg Profit
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {productAnalytics.map((p) => (
+                  <tr key={p.name} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 text-sm font-medium">
+                      {p.name}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">
+                      {p.count}
+                    </td>
+                    <td className="px-6 py-4 text-sm">
+                      ${p.revenue.toFixed(2)}
+                    </td>
+                    <td
+                      className={`px-6 py-4 text-sm font-medium ${
+                        p.profit >= 0 ? "text-green-600" : "text-red-600"
+                      }`}
+                    >
+                      ${p.profit.toFixed(2)}
+                    </td>
+                    <td
+                      className={`px-6 py-4 text-sm ${
+                        p.profit >= 0 ? "text-green-600" : "text-red-600"
+                      }`}
+                    >
+                      ${(p.profit / p.count).toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
