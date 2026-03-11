@@ -10,19 +10,11 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
-
-interface Order {
-  id: number;
-  productName: string;
-  sellingPrice: number;
-  cost: number;
-  shippingCost: number;
-  adSpend: number;
-  date: string;
-}
+import type { Order } from "@/lib/types";
 
 export default function Home() {
   const [orders, setOrders] = useState<Order[]>([]);
+  const [syncing, setSyncing] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -110,11 +102,54 @@ export default function Home() {
     setOrders(orders.filter((o) => o.id !== id));
   }
 
+  async function syncOrders() {
+    const storeUrl = localStorage.getItem("shopifyStoreUrl");
+    const accessToken = localStorage.getItem("shopifyAccessToken");
+    if (!storeUrl || !accessToken) {
+      alert("Please connect your Shopify store in Settings first.");
+      return;
+    }
+    setSyncing(true);
+    try {
+      const res = await fetch("/api/shopify/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ storeUrl, accessToken }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Failed to sync orders");
+        return;
+      }
+      const existingIds = new Set(orders.map((o) => o.id));
+      const newOrders = (data.orders as Order[]).filter(
+        (o) => !existingIds.has(o.id)
+      );
+      if (newOrders.length === 0) {
+        alert("No new orders to sync.");
+        return;
+      }
+      setOrders([...newOrders, ...orders]);
+      alert(`Synced ${newOrders.length} new order(s) from Shopify.`);
+    } catch {
+      alert("Failed to connect to sync endpoint.");
+    } finally {
+      setSyncing(false);
+    }
+  }
+
   return (
     <main className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">
-        Dropshipping Profit Tracker
-      </h1>
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+        <h1 className="text-3xl font-bold">Dropshipping Profit Tracker</h1>
+        <button
+          onClick={syncOrders}
+          disabled={syncing}
+          className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors font-medium disabled:opacity-50 cursor-pointer"
+        >
+          {syncing ? "Syncing..." : "Sync Orders"}
+        </button>
+      </div>
 
       {/* Date Range Filter */}
       <div className="bg-white rounded-lg shadow p-4 mb-8 flex flex-wrap items-end gap-4">
