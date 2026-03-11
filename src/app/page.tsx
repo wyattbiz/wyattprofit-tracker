@@ -22,15 +22,18 @@ interface Order {
 }
 
 export default function Home() {
-  const [orders, setOrders] = useState<Order[]>(() => {
-    if (typeof window === "undefined") return [];
-    const saved = localStorage.getItem("orders");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem("orders", JSON.stringify(orders));
-  }, [orders]);
+    const saved = localStorage.getItem("orders");
+    if (saved) setOrders(JSON.parse(saved));
+    setLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (loaded) localStorage.setItem("orders", JSON.stringify(orders));
+  }, [orders, loaded]);
   const [productName, setProductName] = useState("");
   const [sellingPrice, setSellingPrice] = useState("");
   const [cost, setCost] = useState("");
