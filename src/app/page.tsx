@@ -1,6 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts";
 
 interface Order {
   id: number;
@@ -34,6 +43,17 @@ export default function Home() {
     0
   );
   const netProfit = totalRevenue - totalCosts;
+
+  const dailyProfitData = useMemo(() => {
+    const grouped: Record<string, number> = {};
+    for (const o of orders) {
+      const profit = o.sellingPrice - o.cost - o.shippingCost - o.adSpend;
+      grouped[o.date] = (grouped[o.date] || 0) + profit;
+    }
+    return Object.entries(grouped)
+      .map(([date, profit]) => ({ date, profit: parseFloat(profit.toFixed(2)) }))
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  }, [orders]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -102,6 +122,28 @@ export default function Home() {
           </p>
         </div>
       </div>
+
+      {/* Daily Profit Chart */}
+      {dailyProfitData.length > 0 && (
+        <div className="bg-white rounded-lg shadow p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4">Daily Profit</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={dailyProfitData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+              <YAxis tick={{ fontSize: 12 }} />
+              <Tooltip formatter={(value) => [`$${Number(value).toFixed(2)}`, "Profit"]} />
+              <Line
+                type="monotone"
+                dataKey="profit"
+                stroke="#16a34a"
+                strokeWidth={2}
+                dot={{ r: 4 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
 
       {/* Add Order Form */}
       <div className="bg-white rounded-lg shadow p-6 mb-8">
