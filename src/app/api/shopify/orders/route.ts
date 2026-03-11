@@ -18,11 +18,11 @@ interface ShopifyOrder {
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { storeUrl, accessToken } = body;
+  const { storeUrl, apiKey, apiSecret } = body;
 
-  if (!storeUrl || !accessToken) {
+  if (!storeUrl || !apiKey || !apiSecret) {
     return NextResponse.json(
-      { error: "Missing storeUrl or accessToken" },
+      { error: "Missing storeUrl, apiKey, or apiSecret" },
       { status: 400 }
     );
   }
@@ -32,11 +32,12 @@ export async function POST(request: Request) {
     .replace(/\/+$/, "");
 
   const endpoint = `https://${cleanUrl}/admin/api/2024-01/orders.json?status=any&limit=250`;
+  const basicAuth = Buffer.from(`${apiKey}:${apiSecret}`).toString("base64");
 
   try {
     const res = await fetch(endpoint, {
       headers: {
-        "X-Shopify-Access-Token": accessToken,
+        Authorization: `Basic ${basicAuth}`,
         "Content-Type": "application/json",
       },
     });
