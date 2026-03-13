@@ -6,6 +6,7 @@ export interface Order {
   shippingCost: number;
   adSpend: number;
   date: string;
+  imageUrl?: string;
 }
 
 export interface ProductCostEntry {

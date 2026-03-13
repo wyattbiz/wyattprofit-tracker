@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import type { Order } from "@/lib/types";
+import ProductThumb from "@/components/ProductThumb";
 
 interface DaySummary {
   date: string;
@@ -127,7 +128,10 @@ export default function DailyBreakdown() {
                       const orderMargin = order.sellingPrice > 0 ? ((orderProfit / order.sellingPrice) * 100).toFixed(1) : "0.0";
                       return (
                         <div key={order.id} className="px-4 py-3 bg-hover">
-                          <p className="text-sm font-medium mb-1">{order.productName}</p>
+                          <div className="flex items-center gap-2 mb-1">
+                            <ProductThumb src={order.imageUrl} name={order.productName} />
+                            <p className="text-sm font-medium">{order.productName}</p>
+                          </div>
                           <div className="flex justify-between text-xs text-muted">
                             <span>Revenue: ${order.sellingPrice.toFixed(2)}</span>
                             <span>Cost: ${order.cost.toFixed(2)}</span>
@@ -165,7 +169,12 @@ export default function DailyBreakdown() {
                           const orderMargin = order.sellingPrice > 0 ? ((orderProfit / order.sellingPrice) * 100).toFixed(1) : "0.0";
                           return (
                             <tr key={order.id} className="bg-hover">
-                              <td className="px-6 py-3 text-sm font-medium">{order.productName}</td>
+                              <td className="px-6 py-3 text-sm font-medium">
+                                <div className="flex items-center gap-2">
+                                  <ProductThumb src={order.imageUrl} name={order.productName} />
+                                  {order.productName}
+                                </div>
+                              </td>
                               <td className="px-6 py-3 text-sm">${order.sellingPrice.toFixed(2)}</td>
                               <td className="px-6 py-3 text-sm text-negative">${order.cost.toFixed(2)}</td>
                               <td className="px-6 py-3 text-sm text-negative">${order.shippingCost.toFixed(2)}</td>

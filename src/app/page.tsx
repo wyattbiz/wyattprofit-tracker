@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import type { Order, ProductCostEntry } from "@/lib/types";
 import { useTheme } from "@/components/ThemeProvider";
+import ProductThumb from "@/components/ProductThumb";
 
 export default function Home() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -65,13 +66,14 @@ export default function Home() {
   }, [filteredOrders]);
 
   const productAnalytics = useMemo(() => {
-    const map: Record<string, { revenue: number; profit: number; count: number }> = {};
+    const map: Record<string, { revenue: number; profit: number; count: number; imageUrl?: string }> = {};
     for (const o of filteredOrders) {
       const costs = o.cost + o.shippingCost + o.adSpend;
       if (!map[o.productName]) map[o.productName] = { revenue: 0, profit: 0, count: 0 };
       map[o.productName].revenue += o.sellingPrice;
       map[o.productName].profit += o.sellingPrice - costs;
       map[o.productName].count += 1;
+      if (o.imageUrl && !map[o.productName].imageUrl) map[o.productName].imageUrl = o.imageUrl;
     }
     return Object.entries(map)
       .map(([name, data]) => ({ name, ...data }))
@@ -408,9 +410,12 @@ export default function Home() {
                 return (
                   <div key={order.id} className="p-4">
                     <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <p className="text-sm font-medium">{order.productName}</p>
-                        <p className="text-xs text-muted">{order.date}</p>
+                      <div className="flex items-center gap-2">
+                        <ProductThumb src={order.imageUrl} name={order.productName} />
+                        <div>
+                          <p className="text-sm font-medium">{order.productName}</p>
+                          <p className="text-xs text-muted">{order.date}</p>
+                        </div>
                       </div>
                       <button
                         onClick={() => deleteOrder(order.id)}
@@ -451,7 +456,12 @@ export default function Home() {
                     return (
                       <tr key={order.id} className="hover:bg-hover">
                         <td className="px-6 py-4 text-sm text-muted">{order.date}</td>
-                        <td className="px-6 py-4 text-sm font-medium">{order.productName}</td>
+                        <td className="px-6 py-4 text-sm font-medium">
+                          <div className="flex items-center gap-2">
+                            <ProductThumb src={order.imageUrl} name={order.productName} />
+                            {order.productName}
+                          </div>
+                        </td>
                         <td className="px-6 py-4 text-sm">${order.sellingPrice.toFixed(2)}</td>
                         <td className="px-6 py-4 text-sm text-negative">${orderCosts.toFixed(2)}</td>
                         <td className={`px-6 py-4 text-sm font-medium ${orderProfit >= 0 ? "text-positive" : "text-negative"}`}>
@@ -488,8 +498,13 @@ export default function Home() {
           <div className="sm:hidden divide-y divide-border">
             {productAnalytics.map((p) => (
               <div key={p.name} className="p-4">
-                <p className="text-sm font-medium mb-1">{p.name}</p>
-                <p className="text-xs text-muted mb-2">{p.count} order{p.count !== 1 ? "s" : ""}</p>
+                <div className="flex items-center gap-2 mb-2">
+                  <ProductThumb src={p.imageUrl} name={p.name} />
+                  <div>
+                    <p className="text-sm font-medium">{p.name}</p>
+                    <p className="text-xs text-muted">{p.count} order{p.count !== 1 ? "s" : ""}</p>
+                  </div>
+                </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted">Rev: ${p.revenue.toFixed(2)}</span>
                   <span className={`font-medium ${p.profit >= 0 ? "text-positive" : "text-negative"}`}>
@@ -517,7 +532,12 @@ export default function Home() {
               <tbody className="divide-y divide-border">
                 {productAnalytics.map((p) => (
                   <tr key={p.name} className="hover:bg-hover">
-                    <td className="px-6 py-4 text-sm font-medium">{p.name}</td>
+                    <td className="px-6 py-4 text-sm font-medium">
+                      <div className="flex items-center gap-2">
+                        <ProductThumb src={p.imageUrl} name={p.name} />
+                        {p.name}
+                      </div>
+                    </td>
                     <td className="px-6 py-4 text-sm text-muted">{p.count}</td>
                     <td className="px-6 py-4 text-sm">${p.revenue.toFixed(2)}</td>
                     <td className={`px-6 py-4 text-sm font-medium ${p.profit >= 0 ? "text-positive" : "text-negative"}`}>

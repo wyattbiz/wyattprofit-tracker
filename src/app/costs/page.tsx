@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { Order, ProductCostEntry } from "@/lib/types";
+import ProductThumb from "@/components/ProductThumb";
 
 export default function ProductCosts() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -23,6 +24,11 @@ export default function ProductCosts() {
   const uniqueProducts = Array.from(
     new Set(orders.map((o) => o.productName))
   ).sort();
+
+  const productImages: Record<string, string | undefined> = {};
+  for (const o of orders) {
+    if (o.imageUrl && !productImages[o.productName]) productImages[o.productName] = o.imageUrl;
+  }
 
   function updateCost(product: string, field: "cost" | "adSpend", value: string) {
     setProductCosts((prev) => ({
@@ -95,7 +101,10 @@ export default function ProductCosts() {
             <div className="sm:hidden divide-y divide-border">
               {uniqueProducts.map((product) => (
                 <div key={product} className="p-4 space-y-3">
-                  <p className="text-sm font-medium">{product}</p>
+                  <div className="flex items-center gap-2">
+                    <ProductThumb src={productImages[product]} name={product} />
+                    <p className="text-sm font-medium">{product}</p>
+                  </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs text-muted mb-1">Cost per Unit ($)</label>
@@ -138,7 +147,12 @@ export default function ProductCosts() {
                 <tbody className="divide-y divide-border">
                   {uniqueProducts.map((product) => (
                     <tr key={product} className="hover:bg-hover">
-                      <td className="px-6 py-4 text-sm font-medium">{product}</td>
+                      <td className="px-6 py-4 text-sm font-medium">
+                        <div className="flex items-center gap-2">
+                          <ProductThumb src={productImages[product]} name={product} />
+                          {product}
+                        </div>
+                      </td>
                       <td className="px-6 py-4">
                         <input
                           type="number"

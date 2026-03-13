@@ -6,6 +6,10 @@ interface ShopifyLineItem {
   title: string;
   price: string;
   quantity: number;
+  image?: {
+    src: string;
+  } | null;
+  product_id?: number;
 }
 
 interface ShopifyOrder {
@@ -71,6 +75,7 @@ export async function POST(request: Request) {
           shippingCost: parseFloat(shippingPerItem.toFixed(2)),
           adSpend: 0,
           date: dateStr,
+          imageUrl: item.image?.src || undefined,
         });
       }
     }
