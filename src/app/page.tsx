@@ -10,7 +10,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
-import type { Order } from "@/lib/types";
+import type { Order, ProductCostEntry } from "@/lib/types";
 
 export default function Home() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -121,10 +121,22 @@ export default function Home() {
         alert(data.error || "Failed to sync orders");
         return;
       }
-      const existingIds = new Set(orders.map((o) => o.id));
-      const newOrders = (data.orders as Order[]).filter(
-        (o) => !existingIds.has(o.id)
+      const savedCosts: Record<string, ProductCostEntry> = JSON.parse(
+        localStorage.getItem("productCosts") || "{}"
       );
+      const defaultAd = parseFloat(localStorage.getItem("defaultAdSpend") || "0") || 0;
+
+      const existingIds = new Set(orders.map((o) => o.id));
+      const newOrders = (data.orders as Order[])
+        .filter((o) => !existingIds.has(o.id))
+        .map((o) => {
+          const entry = savedCosts[o.productName];
+          return {
+            ...o,
+            cost: entry?.cost ?? 0,
+            adSpend: entry?.adSpend ?? defaultAd,
+          };
+        });
       if (newOrders.length === 0) {
         alert("No new orders to sync.");
         return;

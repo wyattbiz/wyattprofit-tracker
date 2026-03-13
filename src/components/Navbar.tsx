@@ -8,6 +8,7 @@ export default function Navbar() {
 
   const links = [
     { href: "/", label: "Dashboard" },
+    { href: "/costs", label: "Product Costs" },
     { href: "/settings", label: "Settings" },
   ];
 

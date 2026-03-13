@@ -7,3 +7,8 @@ export interface Order {
   adSpend: number;
   date: string;
 }
+
+export interface ProductCostEntry {
+  cost: number;
+  adSpend: number;
+}
