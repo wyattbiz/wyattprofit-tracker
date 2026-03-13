@@ -1,20 +1,126 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+@custom-variant red-light (&:where(.red-light, .red-light *));
 
 :root {
   --background: #f8fafc;
   --foreground: #1e293b;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --input: #ffffff;
+  --input-border: #d1d5db;
+  --hover: #f9fafb;
+  --thead: #f9fafb;
+  --positive: #16a34a;
+  --negative: #dc2626;
+  --link: #2563eb;
+  --link-hover: #1d4ed8;
+  --link-active: #2563eb;
+  --btn-primary: #2563eb;
+  --btn-primary-hover: #1d4ed8;
+  --btn-success: #16a34a;
+  --btn-success-hover: #15803d;
+  --btn-neutral: #4b5563;
+  --btn-neutral-hover: #374151;
+  --ring: #3b82f6;
+  --success-bg: #f0fdf4;
+  --success-border: #bbf7d0;
+  --success-text: #166534;
+  --success-sub: #15803d;
+  --code-bg: #f3f4f6;
+  --grid: #e5e7eb;
 }
 
 .dark {
   --background: #0f172a;
   --foreground: #e2e8f0;
+  --card: #1f2937;
+  --muted: #9ca3af;
+  --border: #374151;
+  --input: #374151;
+  --input-border: #4b5563;
+  --hover: #374151;
+  --thead: #111827;
+  --positive: #16a34a;
+  --negative: #dc2626;
+  --link: #60a5fa;
+  --link-hover: #93c5fd;
+  --link-active: #60a5fa;
+  --btn-primary: #2563eb;
+  --btn-primary-hover: #1d4ed8;
+  --btn-success: #16a34a;
+  --btn-success-hover: #15803d;
+  --btn-neutral: #4b5563;
+  --btn-neutral-hover: #374151;
+  --ring: #3b82f6;
+  --success-bg: #052e16;
+  --success-border: #14532d;
+  --success-text: #86efac;
+  --success-sub: #4ade80;
+  --code-bg: #374151;
+  --grid: #374151;
+}
+
+.red-light {
+  --background: #0d0000;
+  --foreground: #bb4444;
+  --card: #1a0505;
+  --muted: #883333;
+  --border: #331111;
+  --input: #1a0505;
+  --input-border: #442222;
+  --hover: #220808;
+  --thead: #110000;
+  --positive: #cc5555;
+  --negative: #884444;
+  --link: #bb4444;
+  --link-hover: #cc5555;
+  --link-active: #dd5555;
+  --btn-primary: #661111;
+  --btn-primary-hover: #882222;
+  --btn-success: #661111;
+  --btn-success-hover: #882222;
+  --btn-neutral: #441111;
+  --btn-neutral-hover: #551818;
+  --ring: #993333;
+  --success-bg: #1a0505;
+  --success-border: #442222;
+  --success-text: #cc5555;
+  --success-sub: #993333;
+  --code-bg: #220808;
+  --grid: #331111;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-border: var(--input-border);
+  --color-hover: var(--hover);
+  --color-thead: var(--thead);
+  --color-positive: var(--positive);
+  --color-negative: var(--negative);
+  --color-link: var(--link);
+  --color-link-hover: var(--link-hover);
+  --color-link-active: var(--link-active);
+  --color-btn-primary: var(--btn-primary);
+  --color-btn-primary-hover: var(--btn-primary-hover);
+  --color-btn-success: var(--btn-success);
+  --color-btn-success-hover: var(--btn-success-hover);
+  --color-btn-neutral: var(--btn-neutral);
+  --color-btn-neutral-hover: var(--btn-neutral-hover);
+  --color-ring: var(--ring);
+  --color-success-bg: var(--success-bg);
+  --color-success-border: var(--success-border);
+  --color-success-text: var(--success-text);
+  --color-success-sub: var(--success-sub);
+  --color-code-bg: var(--code-bg);
+  --color-grid: var(--grid);
   --font-sans: var(--font-geist-sans);
 }
 

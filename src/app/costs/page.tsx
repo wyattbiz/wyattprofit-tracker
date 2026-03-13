@@ -60,64 +60,64 @@ export default function ProductCosts() {
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Product Costs</h1>
 
       {/* Default Ad Spend */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
+      <div className="bg-card rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
         <h2 className="text-xl font-semibold mb-2">Default Ad Spend</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+        <p className="text-sm text-muted mb-4">
           Applied to any order that doesn&apos;t have a product-specific ad spend set below.
         </p>
         <div className="flex items-center gap-2">
-          <span className="text-gray-500 dark:text-gray-400">$</span>
+          <span className="text-muted">$</span>
           <input
             type="number"
             step="0.01"
             min="0"
             value={defaultAdSpend}
             onChange={(e) => setDefaultAdSpend(e.target.value)}
-            className="w-32 border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
+            className="w-32 border border-input-border bg-input text-foreground rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
             placeholder="0.00"
           />
-          <span className="text-sm text-gray-500 dark:text-gray-400">per order</span>
+          <span className="text-sm text-muted">per order</span>
         </div>
       </div>
 
       {/* Product Cost Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden mb-6">
+      <div className="bg-card rounded-lg shadow overflow-hidden mb-6">
         <h2 className="text-lg sm:text-xl font-semibold p-4 sm:p-6 pb-3 sm:pb-4">
           Products ({uniqueProducts.length})
         </h2>
         {uniqueProducts.length === 0 ? (
-          <p className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-500 dark:text-gray-400">
+          <p className="px-4 sm:px-6 pb-4 sm:pb-6 text-muted">
             No products yet. Add or sync orders on the Dashboard first.
           </p>
         ) : (
           <>
             {/* Mobile card layout */}
-            <div className="sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
+            <div className="sm:hidden divide-y divide-border">
               {uniqueProducts.map((product) => (
                 <div key={product} className="p-4 space-y-3">
                   <p className="text-sm font-medium">{product}</p>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Cost per Unit ($)</label>
+                      <label className="block text-xs text-muted mb-1">Cost per Unit ($)</label>
                       <input
                         type="number"
                         step="0.01"
                         min="0"
                         value={productCosts[product]?.cost || ""}
                         onChange={(e) => updateCost(product, "cost", e.target.value)}
-                        className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
+                        className="w-full border border-input-border bg-input text-foreground rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                         placeholder="0.00"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Ad Spend ($)</label>
+                      <label className="block text-xs text-muted mb-1">Ad Spend ($)</label>
                       <input
                         type="number"
                         step="0.01"
                         min="0"
                         value={productCosts[product]?.adSpend || ""}
                         onChange={(e) => updateCost(product, "adSpend", e.target.value)}
-                        className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
+                        className="w-full border border-input-border bg-input text-foreground rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                         placeholder="Default"
                       />
                     </div>
@@ -128,16 +128,16 @@ export default function ProductCosts() {
             {/* Desktop table */}
             <div className="hidden sm:block overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="bg-gray-50 dark:bg-gray-900 border-y border-gray-200 dark:border-gray-700">
+                <thead className="bg-thead border-y border-border">
                   <tr>
-                    <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Product</th>
-                    <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Cost per Unit ($)</th>
-                    <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Ad Spend per Order ($)</th>
+                    <th className="px-6 py-3 text-sm font-medium text-muted">Product</th>
+                    <th className="px-6 py-3 text-sm font-medium text-muted">Cost per Unit ($)</th>
+                    <th className="px-6 py-3 text-sm font-medium text-muted">Ad Spend per Order ($)</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="divide-y divide-border">
                   {uniqueProducts.map((product) => (
-                    <tr key={product} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <tr key={product} className="hover:bg-hover">
                       <td className="px-6 py-4 text-sm font-medium">{product}</td>
                       <td className="px-6 py-4">
                         <input
@@ -146,7 +146,7 @@ export default function ProductCosts() {
                           min="0"
                           value={productCosts[product]?.cost || ""}
                           onChange={(e) => updateCost(product, "cost", e.target.value)}
-                          className="w-28 border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
+                          className="w-28 border border-input-border bg-input text-foreground rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                           placeholder="0.00"
                         />
                       </td>
@@ -157,7 +157,7 @@ export default function ProductCosts() {
                           min="0"
                           value={productCosts[product]?.adSpend || ""}
                           onChange={(e) => updateCost(product, "adSpend", e.target.value)}
-                          className="w-28 border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
+                          className="w-28 border border-input-border bg-input text-foreground rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                           placeholder="Default"
                         />
                       </td>
@@ -173,12 +173,12 @@ export default function ProductCosts() {
       <div className="flex items-center gap-3">
         <button
           onClick={handleSave}
-          className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors font-medium cursor-pointer"
+          className="bg-btn-primary text-white px-6 py-2 rounded-md hover:bg-btn-primary-hover transition-colors font-medium cursor-pointer"
         >
           Save &amp; Apply to Orders
         </button>
         {saved && (
-          <span className="text-green-600 text-sm font-medium">
+          <span className="text-positive text-sm font-medium">
             Saved and applied!
           </span>
         )}

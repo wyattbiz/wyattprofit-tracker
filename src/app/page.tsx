@@ -11,11 +11,13 @@ import {
   Tooltip,
 } from "recharts";
 import type { Order, ProductCostEntry } from "@/lib/types";
+import { useTheme } from "@/components/ThemeProvider";
 
 export default function Home() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [syncing, setSyncing] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const { mode } = useTheme();
 
   useEffect(() => {
     const saved = localStorage.getItem("orders");
@@ -75,6 +77,13 @@ export default function Home() {
       .map(([name, data]) => ({ name, ...data }))
       .sort((a, b) => b.profit - a.profit);
   }, [filteredOrders]);
+
+  // Chart colors based on theme
+  const chartLineColor = mode === "red" ? "#cc5555" : "#16a34a";
+  const chartGridColor = mode === "red" ? "#331111" : mode === "dark" ? "#374151" : "#e5e7eb";
+  const chartTickColor = mode === "red" ? "#883333" : mode === "dark" ? "#9ca3af" : "#6b7280";
+  const chartTooltipBg = mode === "red" ? "#1a0505" : mode === "dark" ? "#1f2937" : "#ffffff";
+  const chartTooltipText = mode === "red" ? "#cc4444" : mode === "dark" ? "#e2e8f0" : "#1e293b";
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -182,14 +191,14 @@ export default function Home() {
           <button
             onClick={exportCSV}
             disabled={filteredOrders.length === 0}
-            className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors font-medium disabled:opacity-50 cursor-pointer text-sm"
+            className="bg-btn-neutral text-white px-4 py-2 rounded-md hover:bg-btn-neutral-hover transition-colors font-medium disabled:opacity-50 cursor-pointer text-sm"
           >
             Export CSV
           </button>
           <button
             onClick={syncOrders}
             disabled={syncing}
-            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors font-medium disabled:opacity-50 cursor-pointer text-sm"
+            className="bg-btn-success text-white px-4 py-2 rounded-md hover:bg-btn-success-hover transition-colors font-medium disabled:opacity-50 cursor-pointer text-sm"
           >
             {syncing ? "Syncing..." : "Sync Orders"}
           </button>
@@ -197,33 +206,33 @@ export default function Home() {
       </div>
 
       {/* Date Range Filter */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-6 sm:mb-8 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-end gap-3 sm:gap-4">
+      <div className="bg-card rounded-lg shadow p-4 mb-6 sm:mb-8 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-end gap-3 sm:gap-4">
         <div className="flex-1 min-w-0">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-muted mb-1">
             From
           </label>
           <input
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="w-full sm:w-auto border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
+            className="w-full sm:w-auto border border-input-border bg-input text-foreground rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
         <div className="flex-1 min-w-0">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-muted mb-1">
             To
           </label>
           <input
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="w-full sm:w-auto border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
+            className="w-full sm:w-auto border border-input-border bg-input text-foreground rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
         {(startDate || endDate) && (
           <button
             onClick={() => { setStartDate(""); setEndDate(""); }}
-            className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 cursor-pointer"
+            className="text-sm text-link hover:text-link-hover cursor-pointer"
           >
             Clear filter
           </button>
@@ -232,33 +241,33 @@ export default function Home() {
 
       {/* Dashboard Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-blue-500">
-          <p className="text-sm text-gray-500 dark:text-gray-400 uppercase font-medium">
+        <div className="bg-card rounded-lg shadow p-6 border-l-4 border-link">
+          <p className="text-sm text-muted uppercase font-medium">
             Total Revenue
           </p>
-          <p className="text-2xl font-bold text-blue-600">
+          <p className="text-2xl font-bold text-link">
             ${totalRevenue.toFixed(2)}
           </p>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-red-500">
-          <p className="text-sm text-gray-500 dark:text-gray-400 uppercase font-medium">
+        <div className="bg-card rounded-lg shadow p-6 border-l-4 border-negative">
+          <p className="text-sm text-muted uppercase font-medium">
             Total Costs
           </p>
-          <p className="text-2xl font-bold text-red-600">
+          <p className="text-2xl font-bold text-negative">
             ${totalCosts.toFixed(2)}
           </p>
         </div>
         <div
-          className={`bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 ${
-            netProfit >= 0 ? "border-green-500" : "border-red-500"
+          className={`bg-card rounded-lg shadow p-6 border-l-4 ${
+            netProfit >= 0 ? "border-positive" : "border-negative"
           }`}
         >
-          <p className="text-sm text-gray-500 dark:text-gray-400 uppercase font-medium">
+          <p className="text-sm text-muted uppercase font-medium">
             Net Profit
           </p>
           <p
             className={`text-2xl font-bold ${
-              netProfit >= 0 ? "text-green-600" : "text-red-600"
+              netProfit >= 0 ? "text-positive" : "text-negative"
             }`}
           >
             ${netProfit.toFixed(2)}
@@ -268,19 +277,23 @@ export default function Home() {
 
       {/* Daily Profit Chart */}
       {dailyProfitData.length > 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
+        <div className="bg-card rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
           <h2 className="text-lg sm:text-xl font-semibold mb-4">Daily Profit</h2>
           <div className="h-[200px] sm:h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={dailyProfitData} margin={{ left: -10, right: 10 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-              <YAxis tick={{ fontSize: 11 }} width={45} />
-              <Tooltip formatter={(value) => [`$${Number(value).toFixed(2)}`, "Profit"]} />
+              <CartesianGrid strokeDasharray="3 3" stroke={chartGridColor} />
+              <XAxis dataKey="date" tick={{ fontSize: 11, fill: chartTickColor }} />
+              <YAxis tick={{ fontSize: 11, fill: chartTickColor }} width={45} />
+              <Tooltip
+                formatter={(value) => [`$${Number(value).toFixed(2)}`, "Profit"]}
+                contentStyle={{ backgroundColor: chartTooltipBg, color: chartTooltipText, border: `1px solid ${chartGridColor}` }}
+                labelStyle={{ color: chartTooltipText }}
+              />
               <Line
                 type="monotone"
                 dataKey="profit"
-                stroke="#16a34a"
+                stroke={chartLineColor}
                 strokeWidth={2}
                 dot={{ r: 4 }}
               />
@@ -291,25 +304,25 @@ export default function Home() {
       )}
 
       {/* Add Order Form */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
+      <div className="bg-card rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
         <h2 className="text-lg sm:text-xl font-semibold mb-4">Add New Order</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-muted mb-1">
               Product Name
             </label>
             <input
               type="text"
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
-              className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
+              className="w-full border border-input-border bg-input text-foreground rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
               placeholder="e.g. Phone Case"
               required
             />
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-muted mb-1">
                 Selling Price ($)
               </label>
               <input
@@ -318,13 +331,13 @@ export default function Home() {
                 min="0"
                 value={sellingPrice}
                 onChange={(e) => setSellingPrice(e.target.value)}
-                className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
+                className="w-full border border-input-border bg-input text-foreground rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                 placeholder="29.99"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-muted mb-1">
                 Product Cost ($)
               </label>
               <input
@@ -333,13 +346,13 @@ export default function Home() {
                 min="0"
                 value={cost}
                 onChange={(e) => setCost(e.target.value)}
-                className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
+                className="w-full border border-input-border bg-input text-foreground rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                 placeholder="8.50"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-muted mb-1">
                 Shipping ($)
               </label>
               <input
@@ -348,12 +361,12 @@ export default function Home() {
                 min="0"
                 value={shippingCost}
                 onChange={(e) => setShippingCost(e.target.value)}
-                className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
+                className="w-full border border-input-border bg-input text-foreground rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                 placeholder="3.00"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-muted mb-1">
                 Ad Spend ($)
               </label>
               <input
@@ -362,14 +375,14 @@ export default function Home() {
                 min="0"
                 value={adSpend}
                 onChange={(e) => setAdSpend(e.target.value)}
-                className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
+                className="w-full border border-input-border bg-input text-foreground rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                 placeholder="5.00"
               />
             </div>
           </div>
           <button
             type="submit"
-            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors font-medium cursor-pointer"
+            className="bg-btn-primary text-white px-6 py-2 rounded-md hover:bg-btn-primary-hover transition-colors font-medium cursor-pointer"
           >
             Add Order
           </button>
@@ -377,18 +390,18 @@ export default function Home() {
       </div>
 
       {/* Orders */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden mb-6 sm:mb-8">
+      <div className="bg-card rounded-lg shadow overflow-hidden mb-6 sm:mb-8">
         <h2 className="text-lg sm:text-xl font-semibold p-4 sm:p-6 pb-3 sm:pb-4">
           Orders ({filteredOrders.length})
         </h2>
         {filteredOrders.length === 0 ? (
-          <p className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-500 dark:text-gray-400">
+          <p className="px-4 sm:px-6 pb-4 sm:pb-6 text-muted">
             No orders yet. Add your first order above!
           </p>
         ) : (
           <>
             {/* Mobile card layout */}
-            <div className="sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
+            <div className="sm:hidden divide-y divide-border">
               {filteredOrders.map((order) => {
                 const orderCosts = order.cost + order.shippingCost + order.adSpend;
                 const orderProfit = order.sellingPrice - orderCosts;
@@ -397,19 +410,19 @@ export default function Home() {
                     <div className="flex justify-between items-start mb-2">
                       <div>
                         <p className="text-sm font-medium">{order.productName}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">{order.date}</p>
+                        <p className="text-xs text-muted">{order.date}</p>
                       </div>
                       <button
                         onClick={() => deleteOrder(order.id)}
-                        className="text-xs text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 cursor-pointer"
+                        className="text-xs text-negative hover:opacity-75 cursor-pointer"
                       >
                         Delete
                       </button>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600 dark:text-gray-400">Revenue: ${order.sellingPrice.toFixed(2)}</span>
-                      <span className="text-red-600">Costs: ${orderCosts.toFixed(2)}</span>
-                      <span className={`font-medium ${orderProfit >= 0 ? "text-green-600" : "text-red-600"}`}>
+                      <span className="text-muted">Revenue: ${order.sellingPrice.toFixed(2)}</span>
+                      <span className="text-negative">Costs: ${orderCosts.toFixed(2)}</span>
+                      <span className={`font-medium ${orderProfit >= 0 ? "text-positive" : "text-negative"}`}>
                         ${orderProfit.toFixed(2)}
                       </span>
                     </div>
@@ -420,33 +433,33 @@ export default function Home() {
             {/* Desktop table */}
             <div className="hidden sm:block overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="bg-gray-50 dark:bg-gray-900 border-y border-gray-200 dark:border-gray-700">
+                <thead className="bg-thead border-y border-border">
                   <tr>
-                    <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Date</th>
-                    <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Product</th>
-                    <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Revenue</th>
-                    <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Costs</th>
-                    <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Profit</th>
-                    <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400"></th>
+                    <th className="px-6 py-3 text-sm font-medium text-muted">Date</th>
+                    <th className="px-6 py-3 text-sm font-medium text-muted">Product</th>
+                    <th className="px-6 py-3 text-sm font-medium text-muted">Revenue</th>
+                    <th className="px-6 py-3 text-sm font-medium text-muted">Costs</th>
+                    <th className="px-6 py-3 text-sm font-medium text-muted">Profit</th>
+                    <th className="px-6 py-3 text-sm font-medium text-muted"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="divide-y divide-border">
                   {filteredOrders.map((order) => {
                     const orderCosts = order.cost + order.shippingCost + order.adSpend;
                     const orderProfit = order.sellingPrice - orderCosts;
                     return (
-                      <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                        <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{order.date}</td>
+                      <tr key={order.id} className="hover:bg-hover">
+                        <td className="px-6 py-4 text-sm text-muted">{order.date}</td>
                         <td className="px-6 py-4 text-sm font-medium">{order.productName}</td>
                         <td className="px-6 py-4 text-sm">${order.sellingPrice.toFixed(2)}</td>
-                        <td className="px-6 py-4 text-sm text-red-600">${orderCosts.toFixed(2)}</td>
-                        <td className={`px-6 py-4 text-sm font-medium ${orderProfit >= 0 ? "text-green-600" : "text-red-600"}`}>
+                        <td className="px-6 py-4 text-sm text-negative">${orderCosts.toFixed(2)}</td>
+                        <td className={`px-6 py-4 text-sm font-medium ${orderProfit >= 0 ? "text-positive" : "text-negative"}`}>
                           ${orderProfit.toFixed(2)}
                         </td>
                         <td className="px-6 py-4 text-sm">
                           <button
                             onClick={() => deleteOrder(order.id)}
-                            className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 cursor-pointer"
+                            className="text-negative hover:opacity-75 cursor-pointer"
                           >
                             Delete
                           </button>
@@ -463,22 +476,22 @@ export default function Home() {
 
       {/* Product Analytics */}
       {productAnalytics.length > 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+        <div className="bg-card rounded-lg shadow overflow-hidden">
           <h2 className="text-lg sm:text-xl font-semibold p-4 sm:p-6 pb-3 sm:pb-4">
             Product Analytics
           </h2>
           {/* Mobile card layout */}
-          <div className="sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
+          <div className="sm:hidden divide-y divide-border">
             {productAnalytics.map((p) => (
               <div key={p.name} className="p-4">
                 <p className="text-sm font-medium mb-1">{p.name}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{p.count} order{p.count !== 1 ? "s" : ""}</p>
+                <p className="text-xs text-muted mb-2">{p.count} order{p.count !== 1 ? "s" : ""}</p>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">Rev: ${p.revenue.toFixed(2)}</span>
-                  <span className={`font-medium ${p.profit >= 0 ? "text-green-600" : "text-red-600"}`}>
+                  <span className="text-muted">Rev: ${p.revenue.toFixed(2)}</span>
+                  <span className={`font-medium ${p.profit >= 0 ? "text-positive" : "text-negative"}`}>
                     Profit: ${p.profit.toFixed(2)}
                   </span>
-                  <span className={`${p.profit >= 0 ? "text-green-600" : "text-red-600"}`}>
+                  <span className={`${p.profit >= 0 ? "text-positive" : "text-negative"}`}>
                     Avg: ${(p.profit / p.count).toFixed(2)}
                   </span>
                 </div>
@@ -488,25 +501,25 @@ export default function Home() {
           {/* Desktop table */}
           <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-gray-50 dark:bg-gray-900 border-y border-gray-200 dark:border-gray-700">
+              <thead className="bg-thead border-y border-border">
                 <tr>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Product</th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Orders</th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Revenue</th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Profit</th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Avg Profit</th>
+                  <th className="px-6 py-3 text-sm font-medium text-muted">Product</th>
+                  <th className="px-6 py-3 text-sm font-medium text-muted">Orders</th>
+                  <th className="px-6 py-3 text-sm font-medium text-muted">Revenue</th>
+                  <th className="px-6 py-3 text-sm font-medium text-muted">Profit</th>
+                  <th className="px-6 py-3 text-sm font-medium text-muted">Avg Profit</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              <tbody className="divide-y divide-border">
                 {productAnalytics.map((p) => (
-                  <tr key={p.name} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <tr key={p.name} className="hover:bg-hover">
                     <td className="px-6 py-4 text-sm font-medium">{p.name}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{p.count}</td>
+                    <td className="px-6 py-4 text-sm text-muted">{p.count}</td>
                     <td className="px-6 py-4 text-sm">${p.revenue.toFixed(2)}</td>
-                    <td className={`px-6 py-4 text-sm font-medium ${p.profit >= 0 ? "text-green-600" : "text-red-600"}`}>
+                    <td className={`px-6 py-4 text-sm font-medium ${p.profit >= 0 ? "text-positive" : "text-negative"}`}>
                       ${p.profit.toFixed(2)}
                     </td>
-                    <td className={`px-6 py-4 text-sm ${p.profit >= 0 ? "text-green-600" : "text-red-600"}`}>
+                    <td className={`px-6 py-4 text-sm ${p.profit >= 0 ? "text-positive" : "text-negative"}`}>
                       ${(p.profit / p.count).toFixed(2)}
                     </td>
                   </tr>

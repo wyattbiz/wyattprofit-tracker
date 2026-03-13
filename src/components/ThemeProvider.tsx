@@ -2,9 +2,12 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 
+type Mode = "light" | "dark" | "red";
+
 const ThemeContext = createContext({
-  dark: false,
-  toggle: () => {},
+  mode: "light" as Mode,
+  toggleDark: () => {},
+  toggleRed: () => {},
 });
 
 export function useTheme() {
@@ -12,30 +15,39 @@ export function useTheme() {
 }
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [dark, setDark] = useState(false);
+  const [mode, setMode] = useState<Mode>("light");
 
   useEffect(() => {
-    const saved = localStorage.getItem("theme");
-    if (saved === "dark") {
-      setDark(true);
-      document.documentElement.classList.add("dark");
+    const saved = localStorage.getItem("theme") as Mode | null;
+    if (saved === "dark" || saved === "red") {
+      setMode(saved);
+      applyMode(saved);
     }
   }, []);
 
-  function toggle() {
-    const next = !dark;
-    setDark(next);
-    if (next) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
+  function applyMode(m: Mode) {
+    const el = document.documentElement.classList;
+    el.remove("dark", "red-light");
+    if (m === "dark") el.add("dark");
+    if (m === "red") el.add("red-light");
+  }
+
+  function toggleDark() {
+    const next = mode === "dark" ? "light" : "dark";
+    setMode(next);
+    applyMode(next);
+    localStorage.setItem("theme", next);
+  }
+
+  function toggleRed() {
+    const next = mode === "red" ? "light" : "red";
+    setMode(next);
+    applyMode(next);
+    localStorage.setItem("theme", next);
   }
 
   return (
-    <ThemeContext.Provider value={{ dark, toggle }}>
+    <ThemeContext.Provider value={{ mode, toggleDark, toggleRed }}>
       {children}
     </ThemeContext.Provider>
   );
