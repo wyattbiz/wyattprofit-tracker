@@ -2,6 +2,7 @@
 
 import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import type { Order, ProductCostEntry } from "@/lib/types";
 
 export default function Settings() {
   return (
@@ -22,6 +23,7 @@ function SettingsContent() {
   const [connected, setConnected] = useState(false);
   const [connectedShop, setConnectedShop] = useState("");
   const [connecting, setConnecting] = useState(false);
+  const [resyncing, setResyncing] = useState(false);
 
   useEffect(() => {
     setClientId(localStorage.getItem("shopifyClientId") || "");
@@ -77,6 +79,58 @@ function SettingsContent() {
     } catch {
       alert("Failed to connect. Please check your credentials.");
       setConnecting(false);
+    }
+  }
+
+  async function handleResync() {
+    const storeUrl = localStorage.getItem("shopifyStoreUrl");
+    const accessToken = localStorage.getItem("shopifyAccessToken");
+    if (!storeUrl || !accessToken) {
+      alert("Please connect your Shopify store first.");
+      return;
+    }
+    if (!confirm("This will remove all Shopify orders and re-import them fresh. Manually added orders will be kept. Continue?")) {
+      return;
+    }
+    setResyncing(true);
+    try {
+      const res = await fetch("/api/shopify/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ storeUrl, accessToken }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Failed to sync orders");
+        return;
+      }
+
+      const savedCosts: Record<string, ProductCostEntry> = JSON.parse(
+        localStorage.getItem("productCosts") || "{}"
+      );
+      const defaultAd = parseFloat(localStorage.getItem("defaultAdSpend") || "0") || 0;
+
+      const shopifyOrders: Order[] = (data.orders as Order[]).map((o) => {
+        const entry = savedCosts[o.productName];
+        return {
+          ...o,
+          cost: entry?.cost ?? 0,
+          adSpend: entry?.adSpend ?? defaultAd,
+        };
+      });
+
+      // Shopify line item IDs are small numbers; manual orders use Date.now() (13+ digits)
+      // Keep only manually added orders (ID > 1e12), replace all Shopify orders
+      const existingOrders: Order[] = JSON.parse(localStorage.getItem("orders") || "[]");
+      const manualOrders = existingOrders.filter((o) => o.id > 1e12);
+
+      const allOrders = [...shopifyOrders, ...manualOrders];
+      localStorage.setItem("orders", JSON.stringify(allOrders));
+      alert(`Re-synced ${shopifyOrders.length} order(s) from Shopify. ${manualOrders.length} manual order(s) kept.`);
+    } catch {
+      alert("Failed to connect to sync endpoint.");
+    } finally {
+      setResyncing(false);
     }
   }
 
@@ -173,17 +227,33 @@ function SettingsContent() {
 
         <hr className="my-6 border-border" />
 
-        <button
-          onClick={handleConnect}
-          disabled={connecting || connected}
-          className="bg-btn-success text-white px-6 py-2 rounded-md hover:bg-btn-success-hover transition-colors font-medium disabled:opacity-50 cursor-pointer"
-        >
-          {connecting
-            ? "Redirecting..."
-            : connected
-            ? "Connected"
-            : "Connect to Shopify"}
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={handleConnect}
+            disabled={connecting || connected}
+            className="bg-btn-success text-white px-6 py-2 rounded-md hover:bg-btn-success-hover transition-colors font-medium disabled:opacity-50 cursor-pointer"
+          >
+            {connecting
+              ? "Redirecting..."
+              : connected
+              ? "Connected"
+              : "Connect to Shopify"}
+          </button>
+          {connected && (
+            <button
+              onClick={handleResync}
+              disabled={resyncing}
+              className="bg-btn-neutral text-white px-6 py-2 rounded-md hover:bg-btn-neutral-hover transition-colors font-medium disabled:opacity-50 cursor-pointer"
+            >
+              {resyncing ? "Re-syncing..." : "Re-sync All Orders"}
+            </button>
+          )}
+        </div>
+        {connected && (
+          <p className="text-xs text-muted mt-3">
+            Re-sync removes all Shopify orders and re-imports them fresh with image data. Manually added orders are kept.
+          </p>
+        )}
       </div>
     </main>
   );
