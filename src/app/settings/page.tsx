@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 
 export default function Settings() {
   return (
-    <Suspense fallback={<div className="max-w-4xl mx-auto px-4 py-8">Loading...</div>}>
+    <Suspense fallback={<div className="max-w-4xl mx-auto px-4 py-8 text-gray-700 dark:text-gray-300 dark:bg-gray-900">Loading...</div>}>
       <SettingsContent />
     </Suspense>
   );
@@ -92,57 +92,57 @@ function SettingsContent() {
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Settings</h1>
 
       {connected && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 flex items-center justify-between">
+        <div className="bg-green-50 border border-green-200 dark:bg-green-950 dark:border-green-800 rounded-lg p-4 mb-6 flex items-center justify-between">
           <div>
-            <p className="text-green-800 font-medium">Connected to Shopify</p>
-            <p className="text-green-700 text-sm">{connectedShop}</p>
+            <p className="text-green-800 dark:text-green-300 font-medium">Connected to Shopify</p>
+            <p className="text-green-700 dark:text-green-400 text-sm">{connectedShop}</p>
           </div>
           <button
             onClick={handleDisconnect}
-            className="text-sm text-red-600 hover:text-red-800 cursor-pointer"
+            className="text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 cursor-pointer"
           >
             Disconnect
           </button>
         </div>
       )}
 
-      <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6">
         <h2 className="text-lg sm:text-xl font-semibold mb-4">Shopify Integration</h2>
-        <p className="text-sm text-gray-500 mb-4">
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
           Create a custom app in your Shopify admin under Settings &gt; Apps and
           sales channels &gt; Develop apps. Copy the Client ID and Client Secret,
           and set the allowed redirect URL to:{" "}
-          <code className="bg-gray-100 px-1 rounded text-xs">
+          <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded text-xs">
             https://wyattprofit-tracker.vercel.app/api/shopify/callback
           </code>
         </p>
         <form onSubmit={handleSave} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Client ID
             </label>
             <input
               type="text"
               value={clientId}
               onChange={(e) => setClientId(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Your Shopify app Client ID"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Client Secret
             </label>
             <input
               type="password"
               value={clientSecret}
               onChange={(e) => setClientSecret(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Your Shopify app Client Secret"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Store Name
             </label>
             <div className="flex items-center gap-2">
@@ -150,10 +150,10 @@ function SettingsContent() {
                 type="text"
                 value={storeName}
                 onChange={(e) => setStoreName(e.target.value)}
-                className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="my-store"
               />
-              <span className="text-sm text-gray-500">.myshopify.com</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">.myshopify.com</span>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -171,7 +171,7 @@ function SettingsContent() {
           </div>
         </form>
 
-        <hr className="my-6 border-gray-200" />
+        <hr className="my-6 border-gray-200 dark:border-gray-700" />
 
         <button
           onClick={handleConnect}

@@ -197,33 +197,33 @@ export default function Home() {
       </div>
 
       {/* Date Range Filter */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6 sm:mb-8 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-end gap-3 sm:gap-4">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-6 sm:mb-8 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-end gap-3 sm:gap-4">
         <div className="flex-1 min-w-0">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             From
           </label>
           <input
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="w-full sm:w-auto border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full sm:w-auto border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
           />
         </div>
         <div className="flex-1 min-w-0">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             To
           </label>
           <input
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="w-full sm:w-auto border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full sm:w-auto border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
           />
         </div>
         {(startDate || endDate) && (
           <button
             onClick={() => { setStartDate(""); setEndDate(""); }}
-            className="text-sm text-blue-600 hover:text-blue-800 cursor-pointer"
+            className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 cursor-pointer"
           >
             Clear filter
           </button>
@@ -232,16 +232,16 @@ export default function Home() {
 
       {/* Dashboard Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
-          <p className="text-sm text-gray-500 uppercase font-medium">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-blue-500">
+          <p className="text-sm text-gray-500 dark:text-gray-400 uppercase font-medium">
             Total Revenue
           </p>
           <p className="text-2xl font-bold text-blue-600">
             ${totalRevenue.toFixed(2)}
           </p>
         </div>
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
-          <p className="text-sm text-gray-500 uppercase font-medium">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-red-500">
+          <p className="text-sm text-gray-500 dark:text-gray-400 uppercase font-medium">
             Total Costs
           </p>
           <p className="text-2xl font-bold text-red-600">
@@ -249,11 +249,11 @@ export default function Home() {
           </p>
         </div>
         <div
-          className={`bg-white rounded-lg shadow p-6 border-l-4 ${
+          className={`bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 ${
             netProfit >= 0 ? "border-green-500" : "border-red-500"
           }`}
         >
-          <p className="text-sm text-gray-500 uppercase font-medium">
+          <p className="text-sm text-gray-500 dark:text-gray-400 uppercase font-medium">
             Net Profit
           </p>
           <p
@@ -268,7 +268,7 @@ export default function Home() {
 
       {/* Daily Profit Chart */}
       {dailyProfitData.length > 0 && (
-        <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
           <h2 className="text-lg sm:text-xl font-semibold mb-4">Daily Profit</h2>
           <div className="h-[200px] sm:h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
@@ -291,25 +291,25 @@ export default function Home() {
       )}
 
       {/* Add Order Form */}
-      <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
         <h2 className="text-lg sm:text-xl font-semibold mb-4">Add New Order</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Product Name
             </label>
             <input
               type="text"
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
               placeholder="e.g. Phone Case"
               required
             />
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Selling Price ($)
               </label>
               <input
@@ -318,13 +318,13 @@ export default function Home() {
                 min="0"
                 value={sellingPrice}
                 onChange={(e) => setSellingPrice(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
                 placeholder="29.99"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Product Cost ($)
               </label>
               <input
@@ -333,13 +333,13 @@ export default function Home() {
                 min="0"
                 value={cost}
                 onChange={(e) => setCost(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
                 placeholder="8.50"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Shipping ($)
               </label>
               <input
@@ -348,12 +348,12 @@ export default function Home() {
                 min="0"
                 value={shippingCost}
                 onChange={(e) => setShippingCost(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
                 placeholder="3.00"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Ad Spend ($)
               </label>
               <input
@@ -362,7 +362,7 @@ export default function Home() {
                 min="0"
                 value={adSpend}
                 onChange={(e) => setAdSpend(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
                 placeholder="5.00"
               />
             </div>
@@ -377,18 +377,18 @@ export default function Home() {
       </div>
 
       {/* Orders */}
-      <div className="bg-white rounded-lg shadow overflow-hidden mb-6 sm:mb-8">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden mb-6 sm:mb-8">
         <h2 className="text-lg sm:text-xl font-semibold p-4 sm:p-6 pb-3 sm:pb-4">
           Orders ({filteredOrders.length})
         </h2>
         {filteredOrders.length === 0 ? (
-          <p className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-500">
+          <p className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-500 dark:text-gray-400">
             No orders yet. Add your first order above!
           </p>
         ) : (
           <>
             {/* Mobile card layout */}
-            <div className="sm:hidden divide-y divide-gray-200">
+            <div className="sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
               {filteredOrders.map((order) => {
                 const orderCosts = order.cost + order.shippingCost + order.adSpend;
                 const orderProfit = order.sellingPrice - orderCosts;
@@ -397,17 +397,17 @@ export default function Home() {
                     <div className="flex justify-between items-start mb-2">
                       <div>
                         <p className="text-sm font-medium">{order.productName}</p>
-                        <p className="text-xs text-gray-500">{order.date}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{order.date}</p>
                       </div>
                       <button
                         onClick={() => deleteOrder(order.id)}
-                        className="text-xs text-red-500 hover:text-red-700 cursor-pointer"
+                        className="text-xs text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 cursor-pointer"
                       >
                         Delete
                       </button>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Revenue: ${order.sellingPrice.toFixed(2)}</span>
+                      <span className="text-gray-600 dark:text-gray-400">Revenue: ${order.sellingPrice.toFixed(2)}</span>
                       <span className="text-red-600">Costs: ${orderCosts.toFixed(2)}</span>
                       <span className={`font-medium ${orderProfit >= 0 ? "text-green-600" : "text-red-600"}`}>
                         ${orderProfit.toFixed(2)}
@@ -420,23 +420,23 @@ export default function Home() {
             {/* Desktop table */}
             <div className="hidden sm:block overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="bg-gray-50 border-y border-gray-200">
+                <thead className="bg-gray-50 dark:bg-gray-900 border-y border-gray-200 dark:border-gray-700">
                   <tr>
-                    <th className="px-6 py-3 text-sm font-medium text-gray-500">Date</th>
-                    <th className="px-6 py-3 text-sm font-medium text-gray-500">Product</th>
-                    <th className="px-6 py-3 text-sm font-medium text-gray-500">Revenue</th>
-                    <th className="px-6 py-3 text-sm font-medium text-gray-500">Costs</th>
-                    <th className="px-6 py-3 text-sm font-medium text-gray-500">Profit</th>
-                    <th className="px-6 py-3 text-sm font-medium text-gray-500"></th>
+                    <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Date</th>
+                    <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Product</th>
+                    <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Revenue</th>
+                    <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Costs</th>
+                    <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Profit</th>
+                    <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                   {filteredOrders.map((order) => {
                     const orderCosts = order.cost + order.shippingCost + order.adSpend;
                     const orderProfit = order.sellingPrice - orderCosts;
                     return (
-                      <tr key={order.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 text-sm text-gray-600">{order.date}</td>
+                      <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{order.date}</td>
                         <td className="px-6 py-4 text-sm font-medium">{order.productName}</td>
                         <td className="px-6 py-4 text-sm">${order.sellingPrice.toFixed(2)}</td>
                         <td className="px-6 py-4 text-sm text-red-600">${orderCosts.toFixed(2)}</td>
@@ -446,7 +446,7 @@ export default function Home() {
                         <td className="px-6 py-4 text-sm">
                           <button
                             onClick={() => deleteOrder(order.id)}
-                            className="text-red-500 hover:text-red-700 cursor-pointer"
+                            className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 cursor-pointer"
                           >
                             Delete
                           </button>
@@ -463,18 +463,18 @@ export default function Home() {
 
       {/* Product Analytics */}
       {productAnalytics.length > 0 && (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
           <h2 className="text-lg sm:text-xl font-semibold p-4 sm:p-6 pb-3 sm:pb-4">
             Product Analytics
           </h2>
           {/* Mobile card layout */}
-          <div className="sm:hidden divide-y divide-gray-200">
+          <div className="sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
             {productAnalytics.map((p) => (
               <div key={p.name} className="p-4">
                 <p className="text-sm font-medium mb-1">{p.name}</p>
-                <p className="text-xs text-gray-500 mb-2">{p.count} order{p.count !== 1 ? "s" : ""}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{p.count} order{p.count !== 1 ? "s" : ""}</p>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Rev: ${p.revenue.toFixed(2)}</span>
+                  <span className="text-gray-600 dark:text-gray-400">Rev: ${p.revenue.toFixed(2)}</span>
                   <span className={`font-medium ${p.profit >= 0 ? "text-green-600" : "text-red-600"}`}>
                     Profit: ${p.profit.toFixed(2)}
                   </span>
@@ -488,20 +488,20 @@ export default function Home() {
           {/* Desktop table */}
           <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-gray-50 border-y border-gray-200">
+              <thead className="bg-gray-50 dark:bg-gray-900 border-y border-gray-200 dark:border-gray-700">
                 <tr>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">Product</th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">Orders</th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">Revenue</th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">Profit</th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">Avg Profit</th>
+                  <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Product</th>
+                  <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Orders</th>
+                  <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Revenue</th>
+                  <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Profit</th>
+                  <th className="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Avg Profit</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                 {productAnalytics.map((p) => (
-                  <tr key={p.name} className="hover:bg-gray-50">
+                  <tr key={p.name} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td className="px-6 py-4 text-sm font-medium">{p.name}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{p.count}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{p.count}</td>
                     <td className="px-6 py-4 text-sm">${p.revenue.toFixed(2)}</td>
                     <td className={`px-6 py-4 text-sm font-medium ${p.profit >= 0 ? "text-green-600" : "text-red-600"}`}>
                       ${p.profit.toFixed(2)}
