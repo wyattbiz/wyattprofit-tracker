@@ -104,10 +104,9 @@ export default function Home() {
 
   async function syncOrders() {
     const storeUrl = localStorage.getItem("shopifyStoreUrl");
-    const apiKey = localStorage.getItem("shopifyApiKey");
-    const apiSecret = localStorage.getItem("shopifyApiSecret");
-    if (!storeUrl || !apiKey || !apiSecret) {
-      alert("Please configure your Shopify credentials in Settings first.");
+    const accessToken = localStorage.getItem("shopifyAccessToken");
+    if (!storeUrl || !accessToken) {
+      alert("Please connect your Shopify store in Settings first.");
       return;
     }
     setSyncing(true);
@@ -115,7 +114,7 @@ export default function Home() {
       const res = await fetch("/api/shopify/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ storeUrl, apiKey, apiSecret }),
+        body: JSON.stringify({ storeUrl, accessToken }),
       });
       const data = await res.json();
       if (!res.ok) {
