@@ -150,17 +150,50 @@ export default function Home() {
     }
   }
 
+  function exportCSV() {
+    const rows = [["Date", "Product", "Selling Price", "Cost", "Shipping", "Ad Spend", "Profit"]];
+    for (const o of filteredOrders) {
+      const profit = o.sellingPrice - o.cost - o.shippingCost - o.adSpend;
+      rows.push([
+        o.date,
+        `"${o.productName.replace(/"/g, '""')}"`,
+        o.sellingPrice.toFixed(2),
+        o.cost.toFixed(2),
+        o.shippingCost.toFixed(2),
+        o.adSpend.toFixed(2),
+        profit.toFixed(2),
+      ]);
+    }
+    const csv = rows.map((r) => r.join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "orders.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <main className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold">Dropshipping Profit Tracker</h1>
-        <button
-          onClick={syncOrders}
-          disabled={syncing}
-          className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors font-medium disabled:opacity-50 cursor-pointer"
-        >
-          {syncing ? "Syncing..." : "Sync Orders"}
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={exportCSV}
+            disabled={filteredOrders.length === 0}
+            className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors font-medium disabled:opacity-50 cursor-pointer text-sm"
+          >
+            Export CSV
+          </button>
+          <button
+            onClick={syncOrders}
+            disabled={syncing}
+            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors font-medium disabled:opacity-50 cursor-pointer text-sm"
+          >
+            {syncing ? "Syncing..." : "Sync Orders"}
+          </button>
+        </div>
       </div>
 
       {/* Date Range Filter */}
