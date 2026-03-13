@@ -261,6 +261,24 @@ function SettingsContent() {
           </p>
         )}
       </div>
+
+      {/* Danger Zone */}
+      <div className="bg-card rounded-lg shadow p-4 sm:p-6 mt-6 border border-negative/30">
+        <h2 className="text-lg sm:text-xl font-semibold mb-2 text-negative">Danger Zone</h2>
+        <p className="text-sm text-muted mb-4">
+          This will permanently delete all orders (both Shopify and manually added) and reset the dashboard to zero.
+        </p>
+        <button
+          onClick={() => {
+            if (!confirm("Are you sure you want to delete ALL orders? This cannot be undone.")) return;
+            localStorage.removeItem("orders");
+            alert("All orders have been deleted.");
+          }}
+          className="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition-colors font-medium cursor-pointer"
+        >
+          Delete All Orders
+        </button>
+      </div>
     </main>
   );
 }
