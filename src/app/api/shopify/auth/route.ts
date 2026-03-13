@@ -33,7 +33,7 @@ export async function POST(request: Request) {
   const authUrl =
     `https://${cleanStore}.myshopify.com/admin/oauth/authorize` +
     `?client_id=${encodeURIComponent(clientId)}` +
-    `&scope=${encodeURIComponent("read_orders")}` +
+    `&scope=${encodeURIComponent("read_orders,read_products")}` +
     `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
     `&state=${encodeURIComponent(nonce)}`;
 

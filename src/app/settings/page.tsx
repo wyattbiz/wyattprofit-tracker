@@ -37,8 +37,8 @@ function SettingsContent() {
       setConnectedShop(existingShop);
 
       // One-time auto re-sync to fix duplicate orders and add source tags
-      if (localStorage.getItem("resyncVersion") !== "2") {
-        localStorage.setItem("resyncVersion", "2");
+      if (localStorage.getItem("resyncVersion") !== "3") {
+        localStorage.setItem("resyncVersion", "3");
         handleResync(true);
       }
     }
@@ -107,7 +107,6 @@ function SettingsContent() {
         body: JSON.stringify({ storeUrl, accessToken }),
       });
       const data = await res.json();
-      console.log("DEBUG Shopify sync response:", data.debug);
       if (!res.ok) {
         alert(data.error || "Failed to sync orders");
         return;
