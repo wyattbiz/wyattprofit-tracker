@@ -54,7 +54,13 @@ export async function POST(request: Request) {
     }
 
     const data = await res.json();
-    const shopifyOrders: ShopifyOrder[] = data.orders || [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const shopifyOrders: any[] = data.orders || [];
+
+    // Debug: log first line item's full structure
+    const debugLineItem = shopifyOrders[0]?.line_items?.[0] || null;
+    console.log("DEBUG first line_item keys:", debugLineItem ? Object.keys(debugLineItem) : "none");
+    console.log("DEBUG first line_item:", JSON.stringify(debugLineItem, null, 2));
 
     const mappedOrders: Order[] = [];
 
@@ -81,7 +87,7 @@ export async function POST(request: Request) {
       }
     }
 
-    return NextResponse.json({ orders: mappedOrders });
+    return NextResponse.json({ orders: mappedOrders, debug: { firstLineItem: debugLineItem } });
   } catch (err) {
     return NextResponse.json(
       { error: `Failed to connect to Shopify: ${err}` },

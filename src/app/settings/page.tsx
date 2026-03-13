@@ -107,6 +107,7 @@ function SettingsContent() {
         body: JSON.stringify({ storeUrl, accessToken }),
       });
       const data = await res.json();
+      console.log("DEBUG Shopify sync response:", data.debug);
       if (!res.ok) {
         alert(data.error || "Failed to sync orders");
         return;
