@@ -423,7 +423,7 @@ export default function Home() {
                       <span className="text-muted">Revenue: ${order.sellingPrice.toFixed(2)}</span>
                       <span className="text-negative">Costs: ${orderCosts.toFixed(2)}</span>
                       <span className={`font-medium ${orderProfit >= 0 ? "text-positive" : "text-negative"}`}>
-                        ${orderProfit.toFixed(2)}
+                        ${orderProfit.toFixed(2)} ({order.sellingPrice > 0 ? ((orderProfit / order.sellingPrice) * 100).toFixed(1) : "0.0"}%)
                       </span>
                     </div>
                   </div>
@@ -440,6 +440,7 @@ export default function Home() {
                     <th className="px-6 py-3 text-sm font-medium text-muted">Revenue</th>
                     <th className="px-6 py-3 text-sm font-medium text-muted">Costs</th>
                     <th className="px-6 py-3 text-sm font-medium text-muted">Profit</th>
+                    <th className="px-6 py-3 text-sm font-medium text-muted">Margin</th>
                     <th className="px-6 py-3 text-sm font-medium text-muted"></th>
                   </tr>
                 </thead>
@@ -455,6 +456,9 @@ export default function Home() {
                         <td className="px-6 py-4 text-sm text-negative">${orderCosts.toFixed(2)}</td>
                         <td className={`px-6 py-4 text-sm font-medium ${orderProfit >= 0 ? "text-positive" : "text-negative"}`}>
                           ${orderProfit.toFixed(2)}
+                        </td>
+                        <td className={`px-6 py-4 text-sm ${orderProfit >= 0 ? "text-positive" : "text-negative"}`}>
+                          {order.sellingPrice > 0 ? ((orderProfit / order.sellingPrice) * 100).toFixed(1) : "0.0"}%
                         </td>
                         <td className="px-6 py-4 text-sm">
                           <button
@@ -492,7 +496,7 @@ export default function Home() {
                     Profit: ${p.profit.toFixed(2)}
                   </span>
                   <span className={`${p.profit >= 0 ? "text-positive" : "text-negative"}`}>
-                    Avg: ${(p.profit / p.count).toFixed(2)}
+                    {p.revenue > 0 ? ((p.profit / p.revenue) * 100).toFixed(1) : "0.0"}%
                   </span>
                 </div>
               </div>
@@ -507,7 +511,7 @@ export default function Home() {
                   <th className="px-6 py-3 text-sm font-medium text-muted">Orders</th>
                   <th className="px-6 py-3 text-sm font-medium text-muted">Revenue</th>
                   <th className="px-6 py-3 text-sm font-medium text-muted">Profit</th>
-                  <th className="px-6 py-3 text-sm font-medium text-muted">Avg Profit</th>
+                  <th className="px-6 py-3 text-sm font-medium text-muted">Margin</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -520,7 +524,7 @@ export default function Home() {
                       ${p.profit.toFixed(2)}
                     </td>
                     <td className={`px-6 py-4 text-sm ${p.profit >= 0 ? "text-positive" : "text-negative"}`}>
-                      ${(p.profit / p.count).toFixed(2)}
+                      {p.revenue > 0 ? ((p.profit / p.revenue) * 100).toFixed(1) : "0.0"}%
                     </td>
                   </tr>
                 ))}
