@@ -7,6 +7,7 @@ export interface Order {
   adSpend: number;
   date: string;
   imageUrl?: string;
+  source?: "shopify";
 }
 
 export interface ProductCostEntry {

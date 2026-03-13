@@ -76,6 +76,7 @@ export async function POST(request: Request) {
           adSpend: 0,
           date: dateStr,
           imageUrl: item.image?.src || undefined,
+          source: "shopify",
         });
       }
     }

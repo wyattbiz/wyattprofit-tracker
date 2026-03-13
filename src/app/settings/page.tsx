@@ -35,6 +35,12 @@ function SettingsContent() {
     if (existingToken && existingShop) {
       setConnected(true);
       setConnectedShop(existingShop);
+
+      // One-time auto re-sync to fix duplicate orders and add source tags
+      if (localStorage.getItem("resyncVersion") !== "2") {
+        localStorage.setItem("resyncVersion", "2");
+        handleResync(true);
+      }
     }
 
     // Handle OAuth callback redirect
@@ -47,6 +53,7 @@ function SettingsContent() {
       setConnectedShop(shop);
       router.replace("/settings");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, router]);
 
   function handleSave(e: React.FormEvent) {
@@ -82,14 +89,14 @@ function SettingsContent() {
     }
   }
 
-  async function handleResync() {
+  async function handleResync(auto = false) {
     const storeUrl = localStorage.getItem("shopifyStoreUrl");
     const accessToken = localStorage.getItem("shopifyAccessToken");
     if (!storeUrl || !accessToken) {
-      alert("Please connect your Shopify store first.");
+      if (!auto) alert("Please connect your Shopify store first.");
       return;
     }
-    if (!confirm("This will remove all Shopify orders and re-import them fresh. Manually added orders will be kept. Continue?")) {
+    if (!auto && !confirm("This will remove all Shopify orders and re-import them fresh. Manually added orders will be kept. Continue?")) {
       return;
     }
     setResyncing(true);
@@ -119,10 +126,9 @@ function SettingsContent() {
         };
       });
 
-      // Shopify line item IDs are small numbers; manual orders use Date.now() (13+ digits)
-      // Keep only manually added orders (ID > 1e12), replace all Shopify orders
+      // Keep only manually added orders, replace all Shopify orders
       const existingOrders: Order[] = JSON.parse(localStorage.getItem("orders") || "[]");
-      const manualOrders = existingOrders.filter((o) => o.id > 1e12);
+      const manualOrders = existingOrders.filter((o) => o.source !== "shopify");
 
       const allOrders = [...shopifyOrders, ...manualOrders];
       localStorage.setItem("orders", JSON.stringify(allOrders));
@@ -241,7 +247,7 @@ function SettingsContent() {
           </button>
           {connected && (
             <button
-              onClick={handleResync}
+              onClick={() => handleResync()}
               disabled={resyncing}
               className="bg-btn-neutral text-white px-6 py-2 rounded-md hover:bg-btn-neutral-hover transition-colors font-medium disabled:opacity-50 cursor-pointer"
             >
