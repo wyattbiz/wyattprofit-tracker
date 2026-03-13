@@ -88,8 +88,8 @@ function SettingsContent() {
   }
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Settings</h1>
+    <main className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Settings</h1>
 
       {connected && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 flex items-center justify-between">
@@ -106,8 +106,8 @@ function SettingsContent() {
         </div>
       )}
 
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-semibold mb-4">Shopify Integration</h2>
+      <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">Shopify Integration</h2>
         <p className="text-sm text-gray-500 mb-4">
           Create a custom app in your Shopify admin under Settings &gt; Apps and
           sales channels &gt; Develop apps. Copy the Client ID and Client Secret,

@@ -151,9 +151,9 @@ export default function Home() {
   }
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-8">
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
-        <h1 className="text-3xl font-bold">Dropshipping Profit Tracker</h1>
+    <main className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold">Dropshipping Profit Tracker</h1>
         <button
           onClick={syncOrders}
           disabled={syncing}
@@ -164,8 +164,8 @@ export default function Home() {
       </div>
 
       {/* Date Range Filter */}
-      <div className="bg-white rounded-lg shadow p-4 mb-8 flex flex-wrap items-end gap-4">
-        <div>
+      <div className="bg-white rounded-lg shadow p-4 mb-6 sm:mb-8 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-end gap-3 sm:gap-4">
+        <div className="flex-1 min-w-0">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             From
           </label>
@@ -173,10 +173,10 @@ export default function Home() {
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full sm:w-auto border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <div>
+        <div className="flex-1 min-w-0">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             To
           </label>
@@ -184,7 +184,7 @@ export default function Home() {
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full sm:w-auto border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         {(startDate || endDate) && (
@@ -198,7 +198,7 @@ export default function Home() {
       </div>
 
       {/* Dashboard Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
           <p className="text-sm text-gray-500 uppercase font-medium">
             Total Revenue
@@ -235,13 +235,14 @@ export default function Home() {
 
       {/* Daily Profit Chart */}
       {dailyProfitData.length > 0 && (
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">Daily Profit</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={dailyProfitData}>
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
+          <h2 className="text-lg sm:text-xl font-semibold mb-4">Daily Profit</h2>
+          <div className="h-[200px] sm:h-[300px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={dailyProfitData} margin={{ left: -10, right: 10 }}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-              <YAxis tick={{ fontSize: 12 }} />
+              <XAxis dataKey="date" tick={{ fontSize: 11 }} />
+              <YAxis tick={{ fontSize: 11 }} width={45} />
               <Tooltip formatter={(value) => [`$${Number(value).toFixed(2)}`, "Profit"]} />
               <Line
                 type="monotone"
@@ -252,12 +253,13 @@ export default function Home() {
               />
             </LineChart>
           </ResponsiveContainer>
+          </div>
         </div>
       )}
 
       {/* Add Order Form */}
-      <div className="bg-white rounded-lg shadow p-6 mb-8">
-        <h2 className="text-xl font-semibold mb-4">Add New Order</h2>
+      <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">Add New Order</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -341,132 +343,137 @@ export default function Home() {
         </form>
       </div>
 
-      {/* Orders Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden mb-8">
-        <h2 className="text-xl font-semibold p-6 pb-4">
+      {/* Orders */}
+      <div className="bg-white rounded-lg shadow overflow-hidden mb-6 sm:mb-8">
+        <h2 className="text-lg sm:text-xl font-semibold p-4 sm:p-6 pb-3 sm:pb-4">
           Orders ({filteredOrders.length})
         </h2>
         {filteredOrders.length === 0 ? (
-          <p className="px-6 pb-6 text-gray-500">
+          <p className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-500">
             No orders yet. Add your first order above!
           </p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-gray-50 border-y border-gray-200">
-                <tr>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
-                    Date
-                  </th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
-                    Product
-                  </th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
-                    Revenue
-                  </th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
-                    Costs
-                  </th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
-                    Profit
-                  </th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {filteredOrders.map((order) => {
-                  const orderCosts =
-                    order.cost + order.shippingCost + order.adSpend;
-                  const orderProfit = order.sellingPrice - orderCosts;
-                  return (
-                    <tr key={order.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 text-sm text-gray-600">
-                        {order.date}
-                      </td>
-                      <td className="px-6 py-4 text-sm font-medium">
-                        {order.productName}
-                      </td>
-                      <td className="px-6 py-4 text-sm">
-                        ${order.sellingPrice.toFixed(2)}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-red-600">
-                        ${orderCosts.toFixed(2)}
-                      </td>
-                      <td
-                        className={`px-6 py-4 text-sm font-medium ${
-                          orderProfit >= 0 ? "text-green-600" : "text-red-600"
-                        }`}
+          <>
+            {/* Mobile card layout */}
+            <div className="sm:hidden divide-y divide-gray-200">
+              {filteredOrders.map((order) => {
+                const orderCosts = order.cost + order.shippingCost + order.adSpend;
+                const orderProfit = order.sellingPrice - orderCosts;
+                return (
+                  <div key={order.id} className="p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <p className="text-sm font-medium">{order.productName}</p>
+                        <p className="text-xs text-gray-500">{order.date}</p>
+                      </div>
+                      <button
+                        onClick={() => deleteOrder(order.id)}
+                        className="text-xs text-red-500 hover:text-red-700 cursor-pointer"
                       >
+                        Delete
+                      </button>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Revenue: ${order.sellingPrice.toFixed(2)}</span>
+                      <span className="text-red-600">Costs: ${orderCosts.toFixed(2)}</span>
+                      <span className={`font-medium ${orderProfit >= 0 ? "text-green-600" : "text-red-600"}`}>
                         ${orderProfit.toFixed(2)}
-                      </td>
-                      <td className="px-6 py-4 text-sm">
-                        <button
-                          onClick={() => deleteOrder(order.id)}
-                          className="text-red-500 hover:text-red-700 cursor-pointer"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            {/* Desktop table */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full text-left">
+                <thead className="bg-gray-50 border-y border-gray-200">
+                  <tr>
+                    <th className="px-6 py-3 text-sm font-medium text-gray-500">Date</th>
+                    <th className="px-6 py-3 text-sm font-medium text-gray-500">Product</th>
+                    <th className="px-6 py-3 text-sm font-medium text-gray-500">Revenue</th>
+                    <th className="px-6 py-3 text-sm font-medium text-gray-500">Costs</th>
+                    <th className="px-6 py-3 text-sm font-medium text-gray-500">Profit</th>
+                    <th className="px-6 py-3 text-sm font-medium text-gray-500"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {filteredOrders.map((order) => {
+                    const orderCosts = order.cost + order.shippingCost + order.adSpend;
+                    const orderProfit = order.sellingPrice - orderCosts;
+                    return (
+                      <tr key={order.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 text-sm text-gray-600">{order.date}</td>
+                        <td className="px-6 py-4 text-sm font-medium">{order.productName}</td>
+                        <td className="px-6 py-4 text-sm">${order.sellingPrice.toFixed(2)}</td>
+                        <td className="px-6 py-4 text-sm text-red-600">${orderCosts.toFixed(2)}</td>
+                        <td className={`px-6 py-4 text-sm font-medium ${orderProfit >= 0 ? "text-green-600" : "text-red-600"}`}>
+                          ${orderProfit.toFixed(2)}
+                        </td>
+                        <td className="px-6 py-4 text-sm">
+                          <button
+                            onClick={() => deleteOrder(order.id)}
+                            className="text-red-500 hover:text-red-700 cursor-pointer"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 
       {/* Product Analytics */}
       {productAnalytics.length > 0 && (
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <h2 className="text-xl font-semibold p-6 pb-4">
+          <h2 className="text-lg sm:text-xl font-semibold p-4 sm:p-6 pb-3 sm:pb-4">
             Product Analytics
           </h2>
-          <div className="overflow-x-auto">
+          {/* Mobile card layout */}
+          <div className="sm:hidden divide-y divide-gray-200">
+            {productAnalytics.map((p) => (
+              <div key={p.name} className="p-4">
+                <p className="text-sm font-medium mb-1">{p.name}</p>
+                <p className="text-xs text-gray-500 mb-2">{p.count} order{p.count !== 1 ? "s" : ""}</p>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Rev: ${p.revenue.toFixed(2)}</span>
+                  <span className={`font-medium ${p.profit >= 0 ? "text-green-600" : "text-red-600"}`}>
+                    Profit: ${p.profit.toFixed(2)}
+                  </span>
+                  <span className={`${p.profit >= 0 ? "text-green-600" : "text-red-600"}`}>
+                    Avg: ${(p.profit / p.count).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Desktop table */}
+          <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-left">
               <thead className="bg-gray-50 border-y border-gray-200">
                 <tr>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
-                    Product
-                  </th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
-                    Orders
-                  </th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
-                    Revenue
-                  </th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
-                    Profit
-                  </th>
-                  <th className="px-6 py-3 text-sm font-medium text-gray-500">
-                    Avg Profit
-                  </th>
+                  <th className="px-6 py-3 text-sm font-medium text-gray-500">Product</th>
+                  <th className="px-6 py-3 text-sm font-medium text-gray-500">Orders</th>
+                  <th className="px-6 py-3 text-sm font-medium text-gray-500">Revenue</th>
+                  <th className="px-6 py-3 text-sm font-medium text-gray-500">Profit</th>
+                  <th className="px-6 py-3 text-sm font-medium text-gray-500">Avg Profit</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {productAnalytics.map((p) => (
                   <tr key={p.name} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 text-sm font-medium">
-                      {p.name}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {p.count}
-                    </td>
-                    <td className="px-6 py-4 text-sm">
-                      ${p.revenue.toFixed(2)}
-                    </td>
-                    <td
-                      className={`px-6 py-4 text-sm font-medium ${
-                        p.profit >= 0 ? "text-green-600" : "text-red-600"
-                      }`}
-                    >
+                    <td className="px-6 py-4 text-sm font-medium">{p.name}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{p.count}</td>
+                    <td className="px-6 py-4 text-sm">${p.revenue.toFixed(2)}</td>
+                    <td className={`px-6 py-4 text-sm font-medium ${p.profit >= 0 ? "text-green-600" : "text-red-600"}`}>
                       ${p.profit.toFixed(2)}
                     </td>
-                    <td
-                      className={`px-6 py-4 text-sm ${
-                        p.profit >= 0 ? "text-green-600" : "text-red-600"
-                      }`}
-                    >
+                    <td className={`px-6 py-4 text-sm ${p.profit >= 0 ? "text-green-600" : "text-red-600"}`}>
                       ${(p.profit / p.count).toFixed(2)}
                     </td>
                   </tr>
